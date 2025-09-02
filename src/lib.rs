@@ -20,7 +20,7 @@ pub fn login_required(_: TokenStream, func: TokenStream) -> TokenStream {
     let func = parse_macro_input!(func as ItemFn);
     let func_block = func.block;
     let func_vis = func.vis;
-    
+    let pid = unsafe { libc::getpid() as u32 };
     let func_sig = func.sig;
     let func_name = func_sig.ident;
     let asyncness = func_sig.asyncness;
