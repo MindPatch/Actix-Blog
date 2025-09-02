@@ -1,15 +1,28 @@
-name: Rust
+name: Blacklock Code Scanner
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
-  build:
-
+  blacklock-scan:
     runs-on: ubuntu-latest
+    container:
+      image: blacklocksec/code-scanner:v2  # Use the scanner image
+      options: > 
+        --volume "${{ github.workspace }}:/app"
+        --volume "/bl_reports:/bl_reports"
+    
+      env:
+        SONAR_PROJECTKEY: PYR4n6rEpJt_TnC1
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Run Blacklock Code Scanner
+        run: /usr/local/bin/run.sh
+      
